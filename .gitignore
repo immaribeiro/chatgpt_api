@@ -9,6 +9,8 @@ __pycache__/
 #images
 *.png
 
+*.json
+
 # Distribution / packaging
 .Python
 build/

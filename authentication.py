@@ -1,52 +1,36 @@
+import os
 import openai
 import requests
+import json
 
-# curl=`cat <<EOS
-# curl https://api.openai.com/v1/completions \
-#   -H 'Content-Type: application/json' \
-#   -H "Authorization: Bearer $BEARER" \
-#   -d '{
-#   "model": "$MODEL",
-#   "prompt": "$PROMPT",
-#   "max_tokens": $MAX_TOKEN,
-#   "temperature": $TEMPERATURE
-# }' \
-# --insecure 2>/tmp/chatgpt_err | jq '.choices[]'.text | cut -c 6-
-# EOS`
-# result=`eval ${curl}`
-# exit_code=$?
+# model = ''
+# max_token = ''
+# temperature = ''
 
+image_size='256x256'
+image_number=1
 
-model = ''
-max_token = ''
-temperature = ''
-organization = 'org-Te0QXojeSCHgbq7jA89nsaRE'
-api_key = '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'
-size='1024x1024'
-number_of_images=4
+file_path = 'output/'
 
-def authentication(api_key, organization):
-    url = 'https://api.openai.com/v1/models'
-    headers = 'Authorization: Bearer ' + api_key + ';' + 'OpenAI-Organization: ' + organization
+#openai.organization = organization
+openai.api_key = os.getenv("OPENAI_API_KEY")
 
-openai.organization = organization
-openai.api_key = api_key
+#openai.api_key = api_key
 engines_list = openai.Model.list()
-engines_list.data[0].id
 
     
 #prompt = input("What would you like to ask? \n " )
 prompt = 'where is lisbon?'
-prompt_image = 'a whitch flying on the back of a puppy'
+prompt_image = 'bruno nogueira a beijar nuno markl'
 
 
-def download_images(image_data):
+def download_images(response):
     image_counter = 0    
-    for image in image_data['data']:
+    for image in response['data']:
         url = image['url']
         response = requests.get(url)
         image_counter += 1
-        with open(f'image_' + prompt_image.replace(" ", "_") + '_' + str(image_counter) + '.png' , 'wb') as f:
+        with open(file_path + 'image_' + prompt_image.replace(" ", "_") + '_' + str(image_counter) + '.png' , 'wb') as f:
             f.write(response.content)
 
 
@@ -59,10 +43,14 @@ def openai_chatbot(prompt):
 #openai_chatbot(prompt)
 
 def get_images(prompt_image):
-    image_data = openai.Image.create(prompt=prompt_image, n=number_of_images, size=size)
-    download_images(image_data)
+    response = openai.Image.create(prompt=prompt_image, n=image_number, size=image_size)
+    os.makedirs('json_responses', exist_ok=True)
+
+    response_json = json.dumps(response, indent=4)
+    with open(file_path + 'images_response_' + prompt_image + '.json' , 'wb') as f:
+            f.write(response_json.encode())
+    download_images(response)
 
 get_images(prompt_image)
 
-
-
+#def create_image_variatoins(json_response):
