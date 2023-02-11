@@ -25,10 +25,10 @@ def get_images(prompt_image):
     image_number=1
     response = openai.Image.create(prompt=prompt_image, n=image_number, size=image_size)
     download_images(response, prompt_image)
-    os.makedirs('json_responses', exist_ok=True)
+    os.makedirs('json_output', exist_ok=True)
     response_json = json.dumps(response, indent=4)
 
-    with open('json_responses/' + 'images_response_' + prompt_image + '.json' , 'wb') as f:
+    with open('json_output/' + 'images_response_' + prompt_image + '.json' , 'wb') as f:
             f.write(response_json.encode())
 
     return response
