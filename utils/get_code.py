@@ -5,28 +5,33 @@ import time
 
 from utils.logger import get_logger
 
+prompt_code = 'test'
+
 def get_code(prompt_code):
     logger = get_logger(__name__, 'utils/get_code.log')
     try:
         os.makedirs('output/code/', exist_ok=True)
         model_engine = 'davinci-codex'
-        max_tokens = 128
-        temperature = 0.1
-        top_p = 0.9
-        frequency_penalty = 0.9
-        presence_penalty = 0.6
+        #max_tokens = 128
+        #temperature = 0.1
+        #top_p = 0.9
+        frequency_penalty = 0.1
+        presence_penalty = 0.1
+        max_tokens=1024
+        n=1
+        stop=None
+        temperature=0.5
 
         response = openai.Completion.create(
                 engine=model_engine,
                 prompt=prompt_code,
                 max_tokens=max_tokens,
-                #n=1,
-                #stop=None,
+                n=n,
+                stop=stop,
                 #top_p=top_p,
                 temperature=temperature,
                 frequency_penalty=frequency_penalty,
                 presence_penalty=presence_penalty,
-                #model="text-davinci-002"
             )
 
         #selecting only the first result to print
@@ -42,3 +47,4 @@ def get_code(prompt_code):
 
     except Exception as e:
         logger.debug(f'An error occurred while generating code: {str(e)}')
+get_code(prompt_code)

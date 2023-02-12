@@ -2,7 +2,7 @@ import argparse
 
 from utils.logger import get_logger
 
-parser = argparse.ArgumentParser(description='My ChatGPT app')
+parser = argparse.ArgumentParser(description='ChatGPT API CLI tool')
 parser.add_argument('-i', '--image', dest='image_data', help='Give the prompt to generate an image')
 parser.add_argument('-c', '--code', dest='code_data', help='Give the prompt to generate code')
 parser.add_argument('-t', '--text', dest='text_data', help='Give the prompt to generate text')
@@ -13,7 +13,7 @@ def start():
     logger = get_logger(__name__, 'start.log')
 
     if args.image_data and args.code_data and args.code_data:
-        logger.info('IMAGE: ' + args.image_data)
+        logger.info('IMAGE: ' + str(args.image_data))
         from utils.get_images import get_images
         image = get_images(args.image_data)
         if image is not None:
@@ -23,7 +23,7 @@ def start():
             with open('logs/utils/get_images.log', 'r') as f:
                 print('\nfrom get_images log\n' + f.readlines()[-1])
 
-        logger.info('CODE: ' + args.code_data)
+        logger.info('CODE: ' + str(args.code_data))
         from utils.get_code import get_code
         code = get_code(args.code_data)    
         if code is not None:
@@ -31,7 +31,7 @@ def start():
         else:
             print('Error: Could not generate code.')
 
-        logger.info('TEXT: ' + args.text_data)
+        logger.info('TEXT: ' + str(args.text_data))
         from utils.get_text import get_text
         text = get_text(args.text_data)
         if text is not None:
@@ -41,7 +41,7 @@ def start():
 
 
     elif args.image_data:
-        logger.info('IMAGE: ' + args.image_data)
+        logger.info('IMAGE: ' + str(args.image_data))
         from utils.get_images import get_images
         image = get_images(args.image_data)
         if image is not None:
@@ -52,7 +52,7 @@ def start():
                 print('\nfrom get_images log\n' + f.readlines()[-1])
 
     elif args.code_data:
-        logger.info('CODE: ' + args.code_data)
+        logger.info('CODE: ' + str(args.code_data))
         from utils.get_code import get_code
         code = get_code(args.code_data)    
         if code is not None:
@@ -62,7 +62,7 @@ def start():
 
 
     elif args.text_data:
-        logger.info('TEXT: ' + args.text_data)
+        logger.info('TEXT: ' + str(args.text_data))
         from utils.get_text import get_text
         text = get_text(args.text_data)
         if text is not None:
