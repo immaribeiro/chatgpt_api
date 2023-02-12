@@ -11,6 +11,7 @@ args = parser.parse_args()
 
 def start():
     logger = get_logger(__name__, 'start.log')
+    logger.info('ARGUMENTS: ' + str(args))
 
     if args.image_data and args.code_data and args.code_data:
         logger.info('IMAGE: ' + str(args.image_data))
@@ -30,6 +31,8 @@ def start():
             print('\n---- GENERATED CODE ----\n\n' + str(code) + '\n\n- END -\n')
         else:
             print('Error: Could not generate code.')
+            with open('logs/utils/get_code.log', 'r') as f:
+                print('\nfrom get_code log\n' + f.readlines()[-1])
 
         logger.info('TEXT: ' + str(args.text_data))
         from utils.get_text import get_text
@@ -38,6 +41,8 @@ def start():
             print('\n---- GENERATED TEXT ----\n\n' + str(text) + '\n\n- END -\n')
         else:
             print('Error: Could not generate text.')
+            with open('logs/utils/get_text.log', 'r') as f:
+                print('\nfrom get_text log\n' + f.readlines()[-1])
 
 
     elif args.image_data:
@@ -59,6 +64,8 @@ def start():
             print('\n---- GENERATED CODE ----\n\n' + str(code) + '\n\n- END -\n')
         else:
             print('Error: Could not generate code.')
+            with open('logs/utils/get_code.log', 'r') as f:
+                print('\nfrom get_code log\n' + f.readlines()[-1])
 
 
     elif args.text_data:
@@ -69,6 +76,8 @@ def start():
             print('\n---- GENERATED TEXT ----\n\n' + str(text) + '\n\n- END -\n')
         else:
             print('Error: Could not generate text.')
+            with open('logs/utils/get_text.log', 'r') as f:
+                print('\nfrom get_text log\n' + f.readlines()[-1])
 
     else:
         print('Please provide either an image prompt or a code prompt \nRun with -h for help')
