@@ -9,11 +9,15 @@ def create_parser():
 
         subparsers = parser.add_subparsers(dest='subcommand')
 
-        # define arguments
+        # define image arguments
         image_parser = subparsers.add_parser('image', help='generate image(s) based on the prompt provided')
         image_parser.add_argument('prompt', type=str, help='Prompt for image generation')   
         image_parser.add_argument('--size', dest='size', type=str, help='define the size the generated image(s) to a specific width', default="256x256")
         image_parser.add_argument('--number', dest='number', type=int, help='define the number image(s) to generate', default=1)
+
+        # define conversation arguments
+        conv_parser = subparsers.add_parser('conv', help='start a conversation providing initial prompt')
+        conv_parser.add_argument('prompt', type=str, help='Prompt for conversation start')   
 
         # code_parser = subparsers.add_parser('code', dest='code_data', help='generate code based on the prompt provided')
         # code_parser.add_argument('prompt', type=str, help='Prompt for image generation')   

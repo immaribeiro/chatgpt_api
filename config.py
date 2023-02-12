@@ -8,6 +8,8 @@ def start():
     logger = get_logger(__name__, 'start.log')
     logger.info('ARGUMENTS: ' + str(args))
 
+ #   if args.subcommand == 'image' and 
+
     if args.subcommand == 'image':
         prompt = args.prompt
         number = args.number
@@ -21,6 +23,20 @@ def start():
             print('Error: Could not generate image.')
             with open('logs/utils/get_images.log', 'r') as f:
                 print('\nfrom get_images log\n' + f.readlines()[-1])
+
+    if args.subcommand == 'conv':
+        prompt = args.prompt
+        logger.info('CONV; ' + str(prompt))
+        from utils.get_conversation import get_conversation
+        image = get_conversation(prompt)
+        if image is None:
+            print('\nConversation closed.\n')
+        elif image is not None:
+            print('\nConversation started. Wait for reply.\nReply "done" to end conversation.\n')
+        else:
+            print('Error: Could not start conversation.')
+            with open('logs/utils/get_conversation.log', 'r') as f:
+                print('\nfrom get_conversation log\n' + f.readlines()[-1])
 
     # if args.image_data and args.code_data and args.code_data:
     #     logger.info('IMAGE: ' + str(args.image_data))

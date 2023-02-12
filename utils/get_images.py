@@ -34,7 +34,7 @@ def get_images(prompt_image, number, size):
     try:
         os.makedirs('output/json/images', exist_ok=True)
         image_size=size
-        image_number=number
+        image_number=4
         response = openai.Image.create(prompt=prompt_image, n=image_number, size=image_size)
         download_images(response, prompt_image)
         response_json = json.dumps(response, indent=4)
