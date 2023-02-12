@@ -18,8 +18,10 @@ def download_images(response, prompt_image):
             image_counter += 1
             current_time = str(int(time.time()))
             prompt_image_short = prompt_image[:min(len(prompt_image), 30)]
-            with open(images_output_path + prompt_image_short.replace(" ", "_") + '_' + str(image_counter) + current_time +'.png' , 'wb') as f:
+            filename = prompt_image_short.replace(" ", "_") + '_' + str(image_counter) + '_' + current_time +'.png'
+            with open(images_output_path + filename, 'wb') as f:
                 f.write(response.content)
+            logger.info('New image file downloaded: ' + filename)
         
         return f
     except Exception as e:
@@ -28,18 +30,20 @@ def download_images(response, prompt_image):
 
 
 def get_images(prompt_image):
+    logger = get_logger(__name__, 'utils/get_images.log')
     try:
-        logger = get_logger(__name__, 'utils/get_images.log')
+        os.makedirs('output/json/images', exist_ok=True)
         image_size='256x256'
-        image_number=1
+        image_number=4
         response = openai.Image.create(prompt=prompt_image, n=image_number, size=image_size)
         download_images(response, prompt_image)
-        os.makedirs('output/json/images', exist_ok=True)
         response_json = json.dumps(response, indent=4)
         current_time = str(int(time.time()))
         prompt_image_short = prompt_image[:min(len(prompt_image), 30)]
-        with open('output/json/images/' + prompt_image_short.replace(" ", "_") + current_time + '.json' , 'wb') as f:
+        filename = prompt_image_short.replace(" ", "_") + '_' + current_time + '.json'
+        with open('output/json/images/' + filename , 'wb') as f:
                 f.write(response_json.encode())
+        logger.info('New image request successfully created - saved as json file' + filename)
         return response
     except Exception as e:
         logger.debug(f'An error occurred while generating images: {str(e)}')

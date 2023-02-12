@@ -31,7 +31,7 @@ def start():
         else:
             print('Error: Could not generate code.')
 
-        logger.info('text: ' + args.text_data)
+        logger.info('TEXT: ' + args.text_data)
         from utils.get_text import get_text
         text = get_text(args.text_data)
         if text is not None:
@@ -62,7 +62,7 @@ def start():
 
 
     elif args.text_data:
-        logger.info('text: ' + args.text_data)
+        logger.info('TEXT: ' + args.text_data)
         from utils.get_text import get_text
         text = get_text(args.text_data)
         if text is not None:

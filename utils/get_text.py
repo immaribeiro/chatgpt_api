@@ -31,8 +31,10 @@ def get_text(prompt_text):
         #writing to file all the results
         current_time = str(int(time.time()))
         prompt_text_short = prompt_text[:min(len(prompt_text), 30)]
-        with open('output/text/' + prompt_text_short.replace(" ", "_") + current_time + '.json' , 'wb') as f:
+        filename = prompt_text_short.replace(" ", "_") + '_' + current_time + '.json'
+        with open('output/text/' + filename, 'wb') as f:
                 f.write(json.dumps(response).encode())
+        logger.info('New text request made successfully and saved in json file ' + filename)
         return text
 
     except Exception as e:
