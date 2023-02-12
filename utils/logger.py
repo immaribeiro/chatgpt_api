@@ -1,8 +1,6 @@
 import logging
 import os
 
-log_path = 'logs/'
-
 def get_logger(name, filename):
     logger = logging.getLogger(name)
     logger.setLevel(logging.DEBUG)

@@ -1,32 +1,76 @@
-import os
-import openai
-import re
 import argparse
 
 from utils.logger import get_logger
 
 parser = argparse.ArgumentParser(description='My ChatGPT app')
-parser.add_argument('-i', '--image', dest='image_text', help='Give the prompt to generate an image')
-parser.add_argument('-c', '--code', dest='code_text', help='Give the prompt to generate code')
+parser.add_argument('-i', '--image', dest='image_data', help='Give the prompt to generate an image')
+parser.add_argument('-c', '--code', dest='code_data', help='Give the prompt to generate code')
+parser.add_argument('-t', '--text', dest='text_data', help='Give the prompt to generate text')
 
 args = parser.parse_args()
 
 def start():
-    logger = get_logger(__name__, 'start_cmd.log')
+    logger = get_logger(__name__, 'start.log')
 
-    if args.image_text:
-        logger.info('image: ' + args.image_text)
+    if args.image_data and args.code_data and args.code_data:
+        logger.info('IMAGE: ' + args.image_data)
         from utils.get_images import get_images
-        get_images(args.image_text)
-        
-    elif args.code_text:
-        logger.info('code: ' + args.code_text)
+        image = get_images(args.image_data)
+        if image is not None:
+            print('\n Image(s) generated successfully!\n')
+        else:
+            print('Error: Could not generate image.')
+            with open('logs/utils/get_images.log', 'r') as f:
+                print('\nfrom get_images log\n' + f.readlines()[-1])
+
+        logger.info('CODE: ' + args.code_data)
         from utils.get_code import get_code
-        get_code(args.code_text)    
-        print(get_code(args.code_text))
-      
+        code = get_code(args.code_data)    
+        if code is not None:
+            print('\n---- GENERATED CODE ----\n\n' + str(code) + '\n\n- END -\n')
+        else:
+            print('Error: Could not generate code.')
+
+        logger.info('text: ' + args.text_data)
+        from utils.get_text import get_text
+        text = get_text(args.text_data)
+        if text is not None:
+            print('\n---- GENERATED TEXT ----\n\n' + str(text) + '\n\n- END -\n')
+        else:
+            print('Error: Could not generate text.')
+
+
+    elif args.image_data:
+        logger.info('IMAGE: ' + args.image_data)
+        from utils.get_images import get_images
+        image = get_images(args.image_data)
+        if image is not None:
+            print('\n Image(s) generated successfully!\n')
+        else:
+            print('Error: Could not generate image.')
+            with open('logs/utils/get_images.log', 'r') as f:
+                print('\nfrom get_images log\n' + f.readlines()[-1])
+
+    elif args.code_data:
+        logger.info('CODE: ' + args.code_data)
+        from utils.get_code import get_code
+        code = get_code(args.code_data)    
+        if code is not None:
+            print('\n---- GENERATED CODE ----\n\n' + str(code) + '\n\n- END -\n')
+        else:
+            print('Error: Could not generate code.')
+
+
+    elif args.text_data:
+        logger.info('text: ' + args.text_data)
+        from utils.get_text import get_text
+        text = get_text(args.text_data)
+        if text is not None:
+            print('\n---- GENERATED TEXT ----\n\n' + str(text) + '\n\n- END -\n')
+        else:
+            print('Error: Could not generate text.')
 
     else:
-        print('wrong request! \n')
+        print('Please provide either an image prompt or a code prompt \nRun with -h for help')
     
 start()
