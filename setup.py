@@ -22,9 +22,7 @@ setup(
         "Operating System :: OS Independent",
     ],
     entry_points={
-        "console_scripts": [
-            "chatgpt-api_start=chatgpt-api.config:start"
-        ]
+    'console_scripts': ['chatgpt-api-start=config.start']
     },
     package_data={
         "my_project": ["utils/*"]
