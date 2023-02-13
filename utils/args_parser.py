@@ -2,6 +2,39 @@ import argparse
 
 from utils.logger import get_logger
 
+def add_shared_args(subparser):
+    logger = get_logger(__name__, 'utils/add_shared_args.log')        
+    logger.info('subparser: ' + str(subparser))
+    try:
+        subparser.add_argument('prompt', type=str, help='Prompt for code generation')
+        subparser.add_argument('--number', dest='number', type=int, help='define the number image(s) to generate')
+        subparser.add_argument('--engine', dest='engine', type=str, help='define the engine to use')
+        subparser.add_argument('--temperature', dest='temperature', type=float, help='the sampling temperature to use')
+        subparser.add_argument('--max-tokens', dest='max_tokens', type=int, help='the maximum number of tokens to generate')
+        subparser.add_argument('--stop-sequences', dest='stop_sequences', nargs='+', type=str, help='a list of stop sequences to use')
+        subparser.add_argument('--presence-penalty', dest='presence_penalty', type=float, help='the presence penalty to use for text generation')
+        subparser.add_argument('--frequency-penalty', dest='frequency_penalty', type=float, help='the frequency penalty to use for text generation')
+        subparser.add_argument('--best-of', dest='best_of', type=int, help='the number of best outputs to return')
+        subparser.add_argument('--prompt', dest='prompt', type=str, help='the prompt to use for text generation')
+        subparser.add_argument('--stream', dest='stream', action='store_true', help='stream the output instead of returning it all at once')
+        subparser.add_argument('--log-probabilities', dest='log_probabilities', action='store_true', help='log the probabilities of generated tokens')
+        subparser.add_argument('--expand', dest='expand', nargs='+', type=str, help='the IDs of the documents to expand with the Davinci-Codex model')
+        subparser.add_argument('--model', dest='model', type=str, help='the ID of the Davinci-Codex model to use')
+        subparser.add_argument('--timeout', dest='timeout', type=int, help='the number of seconds to wait for a response from the API')
+
+        #Image
+        subparser.add_argument('--response-format', dest='response-format', type=str, help='The format in which the generated images are returned. Must be one of url or b64_json')
+        subparser.add_argument('--size', dest='size', type=str, help='The size of the generated images. Must be one of 256x256, 512x512, or 1024x1024')
+        subparser.add_argument('--download', dest='download', type=bool, help='download or not the images generated')
+
+        #Code
+        subparser.add_argument('--top_p', dest='top_p', type=int, help='An alternative to sampling with temperature, called nucleus sampling, where the model considers the results of the tokens with top_p probability mass. So 0.1 means only the tokens comprising the top 10% probability mass are considered.')
+        subparser.add_argument('--stop', dest='stop', type=str, help='Up to 4 sequences where the API will stop generating further tokens. The returned text will not contain the stop sequence.')
+
+        return subparser
+    except Exception as e:
+        logger.error(f'Error occurred while creating parser: {e}')
+
 def create_parser():
     logger = get_logger(__name__, 'utils/create_parser.log')
     try:
@@ -9,59 +42,28 @@ def create_parser():
 
         subparsers = parser.add_subparsers(dest='subcommand')
 
-        # define image arguments
-        image_parser = subparsers.add_parser('image', help='generate image(s) based on the prompt provided')
-        image_parser.add_argument('prompt', type=str, help='Prompt for image generation')   
-        image_parser.add_argument('--size', dest='size', type=str, help='define the size the generated image(s) to a specific width', default="256x256")
-        image_parser.add_argument('--number', dest='number', type=int, help='define the number image(s) to generate', default=1)
+        # define image argument and subarguments
+        image_parser = subparsers.add_parser('image', help='generate image(s) based on provided prompt')
+        add_shared_args(image_parser)
 
-        # define conversation arguments
+        # define conversation argument and subarguments
         conv_parser = subparsers.add_parser('conv', help='start a conversation providing initial prompt')
-        conv_parser.add_argument('prompt', type=str, help='Prompt for conversation start')   
+        add_shared_args(conv_parser)
 
-        # code_parser = subparsers.add_parser('code', dest='code_data', help='generate code based on the prompt provided')
-        # code_parser.add_argument('prompt', type=str, help='Prompt for image generation')   
-        # code_parser.add_argument('--size', dest='size', type=str, help='define the size the generated image(s) to a specific width', default="256x256")
-        # code_parser.add_argument('--temperature', dest='temperature', default=0.5, type=float, help='the sampling temperature to use')
+        # define code argument and subarguments
+        code_parser = subparsers.add_parser('code', help='generate code based on the prompt provided')
+        add_shared_args(code_parser)
 
-        # text_parser = subparsers.add_parser('text', dest='text_data', help='generate text based on the prompt provided')
-        # text_parser.add_argument('prompt', type=str, help='Prompt for image generation')   
-        # text_parser.add_argument('--size', dest='size', type=str, help='define the size the generated image(s) to a specific width', default="256x256")
+        # define text argument and subarguments
+        text_parser = subparsers.add_parser('text', help='generate text based on provided prompt')
+        add_shared_args(text_parser)
 
-        #parser.add_argument('-v', '--verbose', action='store_true', help='enable verbose output')
+        parser.add_argument('-v', '--verbose', action='store_true', help='enable verbose output')
         parser.add_argument('--output', type=str, help='output file path')
 
         return parser
 
     except Exception as e:
-        logger.debug(f'An error occurred while parsing the arguments: {str(e)}')
+        logger.error(f'Error occurred while creating parser: {e}')
 
 create_parser()
-
-# engine_parser = subparsers.add_parser('engine')
-
-
-# code_parser = subparsers.add_parser('code', help='generate code based on the prompt provided')
-# code_parser.add_argument('-c', '--code', dest='code_data', help='generate code based on the prompt provided')
-# engine_parser.add_argument('--engine', dest='engine', default='davinci-codex', type=str, help='define the engine to use')
-
-
-# text_parser = subparsers.add_parser('text', help='generate text based on the prompt provided')
-# text_parser.add_argument('-t', '--text', dest='code_data', help='generate text based on the prompt provided')
-
-# engine_parser.add_argument('--engine', dest='engine', default='davinci-codex', type=str, help='define the engine to use')
-# engine_parser.add_argument('--temperature', dest='temperature', default=0.5, type=float, help='the sampling temperature to use')
-# engine_parser.add_argument('--max-tokens', dest='max_tokens', default=2048, type=int, help='the maximum number of tokens to generate')
-# engine_parser.add_argument('--stop-sequences', dest='stop_sequences', default=[], nargs='+', type=str, help='a list of stop sequences to use')
-# engine_parser.add_argument('--presence-penalty', dest='presence_penalty', default=0.0, type=float, help='the presence penalty to use for text generation')
-# engine_parser.add_argument('--frequency-penalty', dest='frequency_penalty', default=0.0, type=float, help='the frequency penalty to use for text generation')
-# engine_parser.add_argument('--best-of', dest='best_of', default=1, type=int, help='the number of best outputs to return')
-# engine_parser.add_argument('--prompt', dest='prompt', default='', type=str, help='the prompt to use for text generation')
-# engine_parser.add_argument('--stream', dest='stream', action='store_true', help='stream the output instead of returning it all at once')
-# engine_parser.add_argument('--log-probabilities', dest='log_probabilities', action='store_true', help='log the probabilities of generated tokens')
-# engine_parser.add_argument('--expand', dest='expand', default=[], nargs='+', type=str, help='the IDs of the documents to expand with the Davinci-Codex model')
-# engine_parser.add_argument('--model', dest='model', default=None, type=str, help='the ID of the Davinci-Codex model to use')
-# engine_parser.add_argument('--timeout', dest='timeout', default=60, type=int, help='the number of seconds to wait for a response from the API')
-
-# define additional arguments for the Davinci-Codex engine
-

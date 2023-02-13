@@ -7,3 +7,25 @@ temperature: The temperature parameter controls the creativity or randomness of 
 frequency_penalty: The frequency_penalty parameter can be used to discourage the API from repeating the same phrases or patterns in the generated text. In this example, we set it to 0 to allow for some repetition.
 presence_penalty: The presence_penalty parameter can be used to discourage the API from generating text that doesn't match the prompt. In this example, we set it to 0 to allow for more creativity in the generated code.
 model: The model parameter specifies the name of the language model we want to use. In this example, we're using the text-davinci-002 model, which is a variant of the davinci model optimized for natural language tasks.
+
+
+
+According to the OpenAI API documentation, the following arguments are permitted for the openai.Image.create() function:
+
+prompt (required): the prompt to use for generating the image(s)
+n: the number of images to generate (default=1)
+size: the size of the generated image(s), specified as a string in the format widthxheight (default="512x512")
+model: the ID of the GPT model to use for generating the image(s)
+response_format: the format of the response ("url" or "data")
+background_color: the background color of the image(s), specified as a string in hex format (default="#ffffff")
+foreground_color: the foreground color of the image(s), specified as a string in hex format (default="#000000")
+format: the format of the generated image(s) ("png" or "jpeg", default="png")
+quality: the quality of the generated image(s) (0-100, default=90)
+width: the width of the generated image(s) in pixels (default=None)
+height: the height of the generated image(s) in pixels (default=None)
+create_coherent_video: whether to create a coherent video using the generated images (default=False)
+fps: the frame rate of the coherent video (default=30)
+output_directory: the directory to save the generated images or coherent video (default=None)
+prefix: a prefix for the file names of the generated images or coherent video (default=None)
+suffix: a suffix for the file names of the generated images or coherent video (default=None)
+timeout: the number of seconds to wait for a response from the API (default=60)

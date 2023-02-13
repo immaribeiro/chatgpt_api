@@ -7,12 +7,12 @@ from utils.logger import get_logger
 
 model="text-davinci-003"
 
-def get_conversation(prompt_conv):
+def get_conversation(prompt_conv, max_tokens):
     logger = get_logger(__name__, 'utils/get_conversation.log')
     try:
         os.makedirs('output/conversations/', exist_ok=True)
         model="text-davinci-003"
-        max_tokens = 100
+        max_tokens = max_tokens
         response = openai.Completion.create(
             model=model,
             prompt=prompt_conv,

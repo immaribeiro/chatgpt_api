@@ -1,6 +1,25 @@
 from utils.logger import get_logger
 from utils.args_parser import create_parser
 
+#from tools.ascii import ascii
+
+defaults = {
+    'number': 1,
+    'engine': 'davinci-codex',
+    'temperature': 0.5,
+    'max_tokens': 2048,
+    'stop_sequences': [],
+    'presence_penalty': 0.0,
+    'frequency_penalty': 0.0,
+    'best_of': 1,
+    'prompt': '',
+    'stream': False,
+    'log_probabilities': False,
+    'expand': [],
+    'model': None,
+    'timeout': 60
+}
+
 def start():
     parser = create_parser()
     args = parser.parse_args()
@@ -8,15 +27,20 @@ def start():
     logger = get_logger(__name__, 'start.log')
     logger.info('ARGUMENTS: ' + str(args))
 
- #   if args.subcommand == 'image' and 
+    # ASCII :)
+    # print('\n')
+    # ascii('ChatGPT API', 'xtimes', 'white', 100)
+    # ascii('CLI Tool', '6x10', 'grey', 100)
 
     if args.subcommand == 'image':
         prompt = args.prompt
         number = args.number
         size = args.size
-        logger.info('IMAGE: ' + str(prompt) + str(number) + str(size))
+        response_format = 'b64_json'
+        download = args.download
+        logger.info('IMAGE: ' + str(prompt) + '\nnumber: ' + str(number) + '\nsize: ' + str(size))
         from utils.get_images import get_images
-        image = get_images(prompt, number, size)
+        image = get_images(prompt, number, size, response_format, download)
         if image is not None:
             print('\n Image(s) generated successfully!\n')
         else:
@@ -26,85 +50,55 @@ def start():
 
     if args.subcommand == 'conv':
         prompt = args.prompt
-        logger.info('CONV; ' + str(prompt))
+        max_tokens = args.max_tokens
+        temperature = args.temperature
+        logger.info('CONV: ' + str(prompt) + '\nmax-tokens: ' + str(max_tokens) + '\ntemperature: ' + str(temperature))
         from utils.get_conversation import get_conversation
-        image = get_conversation(prompt)
-        if image is None:
-            print('\nConversation closed.\n')
-        elif image is not None:
+        conv = get_conversation(prompt, max_tokens)
+        if conv != None:
             print('\nConversation started. Wait for reply.\nReply "done" to end conversation.\n')
+        elif image is None:
+            print('\nConversation closed.\n')
+
         else:
             print('Error: Could not start conversation.')
             with open('logs/utils/get_conversation.log', 'r') as f:
                 print('\nfrom get_conversation log\n' + f.readlines()[-1])
 
-    # if args.image_data and args.code_data and args.code_data:
-    #     logger.info('IMAGE: ' + str(args.image_data))
-    #     from utils.get_images import get_images
-    #     image = get_images(args.image_data)
-    #     if image is not None:
-    #         print('\n Image(s) generated successfully!\n')
-    #     else:
-    #         print('Error: Could not generate image.')
-    #         with open('logs/utils/get_images.log', 'r') as f:
-    #             print('\nfrom get_images log\n' + f.readlines()[-1])
+    if args.subcommand == 'code':
+        prompt = args.prompt
+        model = args.model
+        engine = args.engine
+        max_tokens = args.max_tokens
+        temperature = args.temperature
+        number = args.number
+        top_p = args.top_p
+        frequency_penalty = args.frequency_penalty
+        presence_penalty = args.presence_penalty
+        stop = args.stop
+        logger.info('CODE: ' + str(prompt))
+        from utils.get_code import get_code
+        code = get_code(prompt, number, model, engine, max_tokens, temperature, top_p, frequency_penalty, presence_penalty, stop)
+        if code is not None:
+            print('\n---- GENERATED CODE ----\n\n' + str(code) + '\n\n- END -\n')
+        else:
+            print('Error: Could not generate code.')
+            with open('logs/utils/get_code.log', 'r') as f:
+                print('\nfrom get_code log\n' + f.readlines()[-1])
 
-    #     logger.info('CODE: ' + str(args.code_data))
-    #     from utils.get_code import get_code
-    #     code = get_code(args.code_data)    
-    #     if code is not None:
-    #         print('\n---- GENERATED CODE ----\n\n' + str(code) + '\n\n- END -\n')
-    #     else:
-    #         print('Error: Could not generate code.')
-    #         with open('logs/utils/get_code.log', 'r') as f:
-    #             print('\nfrom get_code log\n' + f.readlines()[-1])
-
-    #     logger.info('TEXT: ' + str(args.text_data))
-    #     from utils.get_text import get_text
-    #     text = get_text(args.text_data)
-    #     if text is not None:
-    #         print('\n---- GENERATED TEXT ----\n\n' + str(text) + '\n\n- END -\n')
-    #     else:
-    #         print('Error: Could not generate text.')
-    #         with open('logs/utils/get_text.log', 'r') as f:
-    #             print('\nfrom get_text log\n' + f.readlines()[-1])
-
-
-    # elif args.image_data:
-    #     logger.info('IMAGE: ' + str(args.image_data))
-    #     from utils.get_images import get_images
-    #     image = get_images(args.image_data)
-    #     if image is not None:
-    #         print('\n Image(s) generated successfully!\n')
-    #     else:
-    #         print('Error: Could not generate image.')
-    #         with open('logs/utils/get_images.log', 'r') as f:
-    #             print('\nfrom get_images log\n' + f.readlines()[-1])
-
-    # elif args.code_data:
-    #     logger.info('CODE: ' + str(args.code_data))
-    #     from utils.get_code import get_code
-    #     code = get_code(args.code_data)    
-    #     if code is not None:
-    #         print('\n---- GENERATED CODE ----\n\n' + str(code) + '\n\n- END -\n')
-    #     else:
-    #         print('Error: Could not generate code.')
-    #         with open('logs/utils/get_code.log', 'r') as f:
-    #             print('\nfrom get_code log\n' + f.readlines()[-1])
-
-
-    # elif args.text_data:
-    #     logger.info('TEXT: ' + str(args.text_data))
-    #     from utils.get_text import get_text
-    #     text = get_text(args.text_data)
-    #     if text is not None:
-    #         print('\n---- GENERATED TEXT ----\n\n' + str(text) + '\n\n- END -\n')
-    #     else:
-    #         print('Error: Could not generate text.')
-    #         with open('logs/utils/get_text.log', 'r') as f:
-    #             print('\nfrom get_text log\n' + f.readlines()[-1])
+    if args.subcommand == 'text':
+        prompt = args.prompt
+        logger.info('TEXT: ' + str(prompt))
+        from utils.get_text import get_text
+        text = get_text(args.text_data)
+        if text is not None:
+            print('\n---- GENERATED TEXT ----\n\n' + str(text) + '\n\n- END -\n')
+        else:
+            print('Error: Could not generate text.')
+            with open('logs/utils/get_text.log', 'r') as f:
+                print('\nfrom get_text log\n' + f.readlines()[-1])
 
     else:
-        print('Please provide either an image prompt or a code prompt \nRun with -h for help')
-    
+        print('\n * Please provide an argument and a  prompt *\nRunning -h for help\n')
+        parser.print_help()    
 start()

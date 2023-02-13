@@ -27,27 +27,43 @@ def download_images(response, prompt_image):
     except Exception as e:
         logger.debug(f'An error occurred while downloading images: {str(e)}')
 
-
-
-def get_images(prompt_image, number, size):
+def get_images(prompt=None, number=None, size=None, response_format=None, download=None):
     logger = get_logger(__name__, 'utils/get_images.log')
     try:
         os.makedirs('output/json/images', exist_ok=True)
-        image_size=size
-        image_number=4
-        response = openai.Image.create(prompt=prompt_image, n=image_number, size=image_size)
-        download_images(response, prompt_image)
-        response_json = json.dumps(response, indent=4)
-        current_time = str(int(time.time()))
-        prompt_image_short = prompt_image[:min(len(prompt_image), 30)]
-        filename = prompt_image_short.replace(" ", "_") + '_' + current_time + '.json'
-        with open('output/json/images/' + filename , 'wb') as f:
-                f.write(response_json.encode())
-        logger.info('New image request successfully created - saved as json file' + filename)
+        os.makedirs('utils/configs/images', exist_ok=True)
+
+        # Load default values from json file
+        with open('utils/configs/images/get_images_config.json') as f:
+            config = json.load(f)
+                
+        args = {
+            'prompt': prompt or config.get('prompt'),
+            'n': number or config.get('number'),
+            'size': size or config.get('size'),
+            'response_format': response_format or config.get('response_format'),
+        }
+
+        args = {k: v for k, v in args.items() if v is not None}
+        
+        response = openai.Image.create(**args)
+
+        #Download images from url
+        if download is None:
+            download = config.get('download')
+        if download:
+            download_images(response, prompt)
+        else:
+            response_json = json.dumps(response, indent=4)
+            current_time = str(int(time.time()))
+            prompt_image_short = prompt[:min(len(prompt), 30)]
+            filename = prompt_image_short.replace(" ", "_") + '_' + current_time + '.json'
+            with open('output/json/images/' + filename , 'wb') as f:
+                    f.write(response_json.encode())
+            logger.info('New image request successfully created - saved as json file' + filename)
         return response
+
     except Exception as e:
         logger.debug(f'An error occurred while generating images: {str(e)}')
-
-
 
 #def create_image_variatoins(json_response): WIP
