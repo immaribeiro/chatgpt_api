@@ -5,31 +5,32 @@ This is a small Python CLI tool that uses OpenAI API to generate responses and o
 ## Help:
 ### usage:
 ```bash
-config [-h] [-i IMAGE_DATA] [-c CODE_DATA] [-t TEXT_DATA]
+config.py [-h] [-v] [--output OUTPUT] {image,conv,code,text,img_var} ...
 ```
 
-### optional arguments: 
+### positional arguments: 
 
 ```bash
-  -h,                     --help                show this help message and exit
-  
-  -i IMAGE_DATA (String), --image IMAGE_DATA    generate image(s) based on the prompt provided
-  
-  -c CODE_DATA (String),  --code  CODE_DATA     generate code based on the prompt provided
-  
-  -t TEXT_DATA (String),  --text  TEXT_DATA     generate text based on the prompt provided
+  {image,conv,code,text,img_var}
+    image               generate image(s) based on provided prompt
+    conv                start a conversation providing initial prompt
+    code                generate code based on the prompt provided
+    text                generate text based on provided prompt
+    img_var             generate image variation based on provided image png file
 ```
-
+### optional arguments:
+```bash
+  -h, --help            show this help message and exit
+  -v, --verbose         enable verbose output
+  --output OUTPUT       output file path
+```
 
 ## Usage Example:
 
-```bash
-  ./config -i "two people having coffee" -c "generate a simple python script" -t "what is the capital of Portugal?"
-```
 
-Can be used with multiple types of requestes or only one:
 ```bash
-  ./config -i "two dogs having coffee"
+  ./config image "two people having coffee" --download false --number 4
+  ./config conv "hello"
 ```
   
   

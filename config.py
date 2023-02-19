@@ -100,6 +100,6 @@ def start():
 
     else:
         print('\n * Please provide an argument and a  prompt *\nRunning -h for help\n')
-       # parser.print_help()  
+        parser.print_help()  
          
 start()
