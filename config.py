@@ -3,23 +3,6 @@ from utils.args_parser import create_parser
 
 #from tools.ascii import ascii
 
-defaults = {
-    'number': 1,
-    'engine': 'davinci-codex',
-    'temperature': 0.5,
-    'max_tokens': 2048,
-    'stop_sequences': [],
-    'presence_penalty': 0.0,
-    'frequency_penalty': 0.0,
-    'best_of': 1,
-    'prompt': '',
-    'stream': False,
-    'log_probabilities': False,
-    'expand': [],
-    'model': None,
-    'timeout': 60
-}
-
 def start():
     parser = create_parser()
     args = parser.parse_args()
@@ -36,7 +19,7 @@ def start():
         prompt = args.prompt
         number = args.number
         size = args.size
-        response_format = 'b64_json'
+        response_format = args.response_format
         download = args.download
         logger.info('IMAGE: ' + str(prompt) + '\nnumber: ' + str(number) + '\nsize: ' + str(size))
         from utils.get_images import get_images
@@ -46,7 +29,24 @@ def start():
         else:
             print('Error: Could not generate image.')
             with open('logs/utils/get_images.log', 'r') as f:
-                print('\nfrom get_images log\n' + f.readlines()[-1])
+                print('\nfrom get_images log:\n' + f.readlines()[-1])
+
+
+    if args.subcommand == 'img_var':
+        image = args.image
+        number = args.number
+        size = args.size
+        response_format = args.response_format
+        download = args.download
+        logger.info('VAR IMG: ' + str(image) + '\nnumber: ' + str(number) + '\nsize: ' + str(size))
+        from utils.get_images import get_image_variations
+        image = get_image_variations(image, number, size, response_format, download)
+        if image is not None:
+            print('\n Variation image(s) generated successfully!\n')
+        else:
+            print('Error: Could not generate variation image.')
+            with open('logs/utils/get_image_variations.log', 'r') as f:
+                print('\nfrom get_image_variations log:\n' + f.readlines()[-1])
 
     if args.subcommand == 'conv':
         prompt = args.prompt
@@ -63,7 +63,7 @@ def start():
         else:
             print('Error: Could not start conversation.')
             with open('logs/utils/get_conversation.log', 'r') as f:
-                print('\nfrom get_conversation log\n' + f.readlines()[-1])
+                print('\nfrom get_conversation log:\n' + f.readlines()[-1])
 
     if args.subcommand == 'code':
         prompt = args.prompt
@@ -84,7 +84,7 @@ def start():
         else:
             print('Error: Could not generate code.')
             with open('logs/utils/get_code.log', 'r') as f:
-                print('\nfrom get_code log\n' + f.readlines()[-1])
+                print('\nfrom get_code log:\n' + f.readlines()[-1])
 
     if args.subcommand == 'text':
         prompt = args.prompt
@@ -96,9 +96,10 @@ def start():
         else:
             print('Error: Could not generate text.')
             with open('logs/utils/get_text.log', 'r') as f:
-                print('\nfrom get_text log\n' + f.readlines()[-1])
+                print('\nfrom get_text log:\n' + f.readlines()[-1])
 
     else:
         print('\n * Please provide an argument and a  prompt *\nRunning -h for help\n')
-        parser.print_help()    
+       # parser.print_help()  
+         
 start()
