@@ -89,7 +89,7 @@ def get_images(prompt=None, number=None, size=None, response_format=None, downlo
             generate_json(response, prompt, json_output_folder)
             logger.info(f'JSON file successfully generated!')
         
-        time.sleep(3)
+        time.sleep(0.1)
         return response
 
     except openai.error.OpenAIError as e:

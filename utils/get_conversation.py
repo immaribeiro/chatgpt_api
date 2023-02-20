@@ -1,5 +1,4 @@
 import time
-import sys
 import os
 import openai
 
@@ -27,9 +26,11 @@ def get_conversation(prompt_conv, max_tokens):
 
     except Exception as e:
         logger.debug(f'An error occurred while generating conversation: {str(e)}')
+
         return
 
     while True:
+        time.sleep(0.1)
         question = input('\n\nMe: ')
         logger.info('\nqst: \n' + str(question))
 
@@ -37,4 +38,5 @@ def get_conversation(prompt_conv, max_tokens):
             get_conversation('Good Bye!')
         else:
             get_conversation(question)
+
         return response

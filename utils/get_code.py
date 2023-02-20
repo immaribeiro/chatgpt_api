@@ -35,22 +35,21 @@ def get_code(prompt=None, number=None, model=None, engine=None, max_tokens=None,
         
         # Remove any arguments that are still None
         args = {k: v for k, v in args.items() if v is not None}
-        try:
-            response = openai.Completion.create(**args)
-            #selecting only the first result to print
-            code = response.choices[0].text
 
-        except openai.error.OpenAIError as e:
-            logger.debug(f'An error occurred while generating code: {str(e)}')
+        response = openai.Completion.create(**args)
+        #selecting only the first result to print
+        code = response.choices[0].text
 
-            #writing to file all the results
-            current_time = str(int(time.time()))
-            prompt_short = prompt[:min(len(prompt), 30)]
-            filename = prompt_short.replace(" ", "_") + '_' + current_time +'.json'
-            with open('output/code/' + filename, 'wb') as f:
-                    f.write(json.dumps(response).encode())
-            logger.info('New code request made successfuly and saved in file ' + filename)
-            return code
+        #writing to file all the results
+        current_time = str(int(time.time()))
+        prompt_short = prompt[:min(len(prompt), 30)]
+        filename = prompt_short.replace(" ", "_") + '_' + current_time +'.json'
+        with open('output/code/' + filename, 'wb') as f:
+                f.write(json.dumps(response).encode())
+        logger.info('New code request made successfuly and saved in file ' + filename)
+        
+        time.sleep(0.1)
+        return code
 
     except Exception as e:
         logger.debug(f'An error occurred while generating code: {str(e)}')
